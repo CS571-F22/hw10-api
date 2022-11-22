@@ -7,7 +7,11 @@ All routes are relative to `https://www.coletnelson.us/cs571/f22/hw10/api/`
 | Method | URL | Purpose | Return Codes |
 | --- | --- | --- | --- |
 | `GET`| `/chatroom` | Get all chatrooms. | 200, 304 |
+| `GET`| `/numUsers` | Get the number of users registered on BadgerChat. | 200, 304 |
+| `GET`| `/numMessages` | Get the number of messages on BadgerChat. | 200, 304 |
+| `GET`| `/chatroom/:chatroomName/numMessages` | Get the number of messages for the specified chatroom. | 200, 304, 404 |
 | `GET` | `/chatroom/:chatroomName/messages`| Get latest 25 messages for specified chatroom. | 200, 304, 404 |
+| `GET` | `/chatroom/:chatroomName/messages/:messageId`| Get the information for the specified message. | 200, 304, 404 |
 | `POST` | `/chatroom/:chatroomName/messages` | Posts a message to the specified chatroom. Requires JWT. | 200, 400, 404, 413 |
 | `DELETE` | `/chatroom/:chatroomName/messages/:messageId` | Deletes the given message. Requires JWT. | 200, 400, 401, 404 |
 | `POST` | `/register` | Registers a user account and returns a JWT. | 200, 400, 401, 409, 413  |
@@ -33,6 +37,50 @@ A `200` (new) or `304` (cached) response will be sent with the list of all chatr
     "Mendota",
     "Olbrich"
 ]
+```
+
+### Getting Number of Users
+`GET` `https://www.coletnelson.us/cs571/f22/hw10/api/numUsers`
+
+A `200` (new) or `304` (cached) response will be sent with the number of registered users.
+
+```json
+{
+    "msg": "Successfully got the number of users!",
+    "users": 735
+}
+```
+
+### Getting Number of Messages
+`GET` `https://www.coletnelson.us/cs571/f22/hw10/api/numMessages`
+
+A `200` (new) or `304` (cached) response will be sent with the number of messages on BadgerChat.
+
+```json
+{
+    "msg": "Successfully got the number of messages!",
+    "messages": 543
+}
+```
+
+### Getting Number of Messages for Chatroom
+`GET` `https://www.coletnelson.us/cs571/f22/hw10/api/chatroom/:chatroomName/numMessages`
+
+A `200` (new) or `304` (cached) response will be sent with the number of messages for the specified chatroom.
+
+```json
+{
+    "msg": "Successfully got the number of messages!",
+    "messages": 45
+}
+```
+
+If a chatroom is specified that does not exist, a `404` will be returned.
+
+```json
+{
+    "msg": "The specified chatroom does not exist. Chatroom names are case-sensitive."
+}
 ```
 
 ### Getting Messages for Chatroom
@@ -68,6 +116,41 @@ If a chatroom is specified that does not exist, a `404` will be returned.
 ```json
 {
     "msg": "The specified chatroom does not exist. Chatroom names are case-sensitive."
+}
+```
+
+### Getting Message by ID
+
+`GET` `https://www.coletnelson.us/cs571/f22/hw10/api/chatroom/:chatroomName/messages/:messageId`
+
+Gets a particular message by its `:messageId` and the `:chatroomName` that it is in. A `200` (new) or `304` (cached) response will be sent with the message's information.
+
+```json
+{
+    "msg": "Successfully got the message!",
+    "message": {
+        "id": 571,
+        "poster": "tmagz",
+        "title": "title",
+        "content": "content",
+        "chatroom": "Arboretum"
+    }
+}
+```
+
+If a chatroom is specified that does not exist, a `404` will be returned.
+
+```json
+{
+    "msg": "The specified chatroom does not exist. Chatroom names are case-sensitive."
+}
+```
+
+Furthermore, if the message does not exist in the provided chatroom, a `404` will be returned.
+
+```json
+{
+    "msg": "No message exists with that id and chatroom name!"
 }
 ```
 
